@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import { activitiesDBService } from '../../common/db/activities';
+import { contributionsDBService } from '../../common/db';
 import { ContributionsService } from '../contribs';
 
 class ActivitiesManagerImpl implements ContributionsService {
@@ -26,7 +26,7 @@ class ActivitiesManagerImpl implements ContributionsService {
   find(terms?) {
     terms = terms || {};
 
-    return activitiesDBService.db
+    return contributionsDBService.db
       .find(terms)
       .then(result => (result || []).map(activityRow => prepareForOutput(activityRow)));
   }

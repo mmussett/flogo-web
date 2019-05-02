@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import get from 'lodash/get';
 import { PUBLISH_FIELDS_SHORT, PUBLISH_FIELDS_LONG } from './constants';
-import { triggersDBService } from '../../common/db/triggers';
+import { contributionsDBService } from '../../common/db';
 import { ContributionsService } from '../contribs';
 
 class TriggerManagerImpl implements ContributionsService {
@@ -29,7 +29,7 @@ class TriggerManagerImpl implements ContributionsService {
     terms = translateFindTerms(terms);
     const { fields } = Object.assign({ fields: 'full' }, options);
 
-    return triggersDBService.db
+    return contributionsDBService.db
       .find(terms)
       .then(result =>
         (result || []).map(triggerRow => cleanForOutput(triggerRow, fields))
@@ -37,7 +37,7 @@ class TriggerManagerImpl implements ContributionsService {
   }
 
   findByRef(ref) {
-    return triggersDBService.db
+    return contributionsDBService.db
       .findOne({ ref })
       .then(trigger => (trigger ? cleanForOutput(trigger) : null));
   }
