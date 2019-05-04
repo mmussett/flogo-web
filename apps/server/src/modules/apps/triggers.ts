@@ -3,7 +3,7 @@ import mapKeys from 'lodash/mapKeys';
 import { injectable, inject } from 'inversify';
 
 import { TOKENS } from '../../core';
-import { TriggerManager as TriggerContribManager } from '../triggers';
+import { ContributionManager } from '../contributions';
 import { Database } from '../../common/database.service';
 import { ErrorManager, ERROR_TYPES } from '../../common/errors';
 import { CONSTRAINTS } from '../../common/validation';
@@ -103,7 +103,7 @@ export class AppTriggersService {
           throw ErrorManager.createValidationError('Validation error', errors);
         }
 
-        return TriggerContribManager.findByRef(triggerData.ref).then(contribTrigger => {
+        return ContributionManager.findByRef(triggerData.ref).then(contribTrigger => {
           if (!contribTrigger) {
             throw ErrorManager.createValidationError('Validation error', [
               {

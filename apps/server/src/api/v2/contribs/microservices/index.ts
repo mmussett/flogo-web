@@ -1,31 +1,28 @@
 import { flatten } from 'lodash';
 
-import { TriggerManager } from '../../../../modules/triggers';
-import { ActivitiesManager } from '../../../../modules/activities';
-
+import { ContributionManager } from '../../../../modules/contributions';
 import { getContribInstallationController as getInstallationController } from '../../../../modules/engine';
 import { config } from '../../../../config/app-config';
 import { logger } from '../../../../common/logging';
 import { install as installContributionToEngine } from '../../../../modules/contrib-installer/microservice';
 import { TYPE_ACTIVITY, TYPE_TRIGGER, TYPE_FUNCTION } from '../../../../common/constants';
 import { ERROR_TYPES, ErrorManager } from '../../../../common/errors';
-import { FunctionManager } from '../../../../modules/functions';
 
 const contributionTypes = {
   activity: {
-    manager: ActivitiesManager,
+    manager: ContributionManager,
     installerOpts: {
       type: TYPE_ACTIVITY,
     },
   },
   trigger: {
-    manager: TriggerManager,
+    manager: ContributionManager,
     installerOpts: {
       type: TYPE_TRIGGER,
     },
   },
   function: {
-    manager: FunctionManager,
+    manager: ContributionManager,
     installerOpts: {
       type: TYPE_FUNCTION,
     },
@@ -50,8 +47,7 @@ async function listContributions(ctx) {
   const filterName = ctx.request.query['filter[name]'];
   const filterRef = ctx.request.query['filter[ref]'];
   const filterShim = ctx.request.query['filter[shim]'];
-  const contributionType = contributionTypes[ctx.request.query['filter[type]']];
-  let foundContributions;
+  // const contributionType = contributionTypes[ctx.request.query['filter[type]']];
 
   if (filterName) {
     searchTerms.name = filterName;
@@ -62,18 +58,8 @@ async function listContributions(ctx) {
   if (filterShim) {
     searchTerms.shim = filterShim;
   }
-  if (contributionType) {
-    foundContributions = await contributionType.manager.find(searchTerms);
-  } else {
-    const contributionsFetcher = Object.keys(contributionTypes).reduce(
-      (getContribsArray, type) =>
-        getContribsArray.concat(contributionTypes[type].manager.find(searchTerms)),
-      []
-    );
-    const results = await Promise.all(contributionsFetcher);
-    foundContributions = flatten(results);
-  }
 
+  const foundContributions = await ContributionManager.find(searchTerms);
   ctx.body = {
     data: foundContributions || [],
   };

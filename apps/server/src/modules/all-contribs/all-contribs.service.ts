@@ -10,21 +10,13 @@ const toPairs = c => [c.ref, c] as [string, any];
 export class AllContribsService {
   constructor(
     private pluginRegistry: ResourcePluginRegistry,
-    @inject(TOKENS.ContribActivitiesManager)
-    private contribActivitiesService: ContributionsService,
-    @inject(TOKENS.ContribTriggersManager)
-    private contribTriggersService: ContributionsService,
-    @inject(TOKENS.ContribFunctionsManager)
-    private contribFunctionsService: ContributionsService
+    @inject(TOKENS.ContributionsManager)
+    private contributionsManager: ContributionsService
   ) {}
 
   async loadAll(): Promise<ContributionSchema[]> {
-    const [activities, triggers, functions] = await Promise.all([
-      this.contribActivitiesService.find(),
-      this.contribTriggersService.find(),
-      this.contribFunctionsService.find(),
-    ]);
-    return [...activities, ...triggers, ...functions, ...this.getResourceSchemas()];
+    const contributions = await this.contributionsManager.find();
+    return [...contributions, ...this.getResourceSchemas()];
   }
 
   async allByRef(): Promise<Map<string, ContributionSchema>> {

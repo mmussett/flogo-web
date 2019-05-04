@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import { ActivitiesManager } from '../../../../modules/activities';
+import { ContributionManager } from '../../../../modules/contributions';
 import { ErrorManager } from '../../../../common/errors';
 // import { LegacyMicroServiceFormatter } from '../../../../modules/transfer/exporter/formatters/legacy-microservice-formatter';
 
@@ -16,7 +16,7 @@ export const findAndExportFlow = async (context: Context, next) => {
 
 // todo: fcastill - used for test-running flows, not supported in v0.9.0, re-enabling after
 async function transformToProcess(action) {
-  const activities = await ActivitiesManager.find();
+  const activities = await ContributionManager.find();
   // const exporter = new LegacyMicroServiceFormatter(activities);
   const {
     description,

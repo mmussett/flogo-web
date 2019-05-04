@@ -4,7 +4,5 @@ export const TOKENS = {
   Logger: Symbol('Logger'),
   AppsDb: Symbol('AppsDb'),
   ResourceIndexerDb: Symbol('ResourceIndexerDb'),
-  ContribActivitiesManager: Symbol('ContribActivitiesManager'),
-  ContribFunctionsManager: Symbol('ContribFunctionsManager'),
-  ContribTriggersManager: Symbol('ContribTriggersManager'),
+  ContributionsManager: Symbol('ContributionsManager'),
 };
