@@ -19,6 +19,8 @@ class ContributionManagerImpl implements ContributionsService {
    * @param terms
    * @param terms.name {string} name of the app
    * @param terms.ref {string} url ref property
+   * @param terms.type {string} type of the contribution to filter more
+   * @param terms.shim {string} if the contribution is shimmable. It is mainly applicable for shimmable triggers
    */
   find(terms?) {
     return contributionsDBService.db

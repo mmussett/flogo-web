@@ -1,5 +1,3 @@
-import { flatten } from 'lodash';
-
 import { ContributionManager } from '../../../../modules/contributions';
 import { getContribInstallationController as getInstallationController } from '../../../../modules/engine';
 import { config } from '../../../../config/app-config';
@@ -10,24 +8,27 @@ import { ERROR_TYPES, ErrorManager } from '../../../../common/errors';
 
 const contributionTypes = {
   activity: {
-    manager: ContributionManager,
     installerOpts: {
       type: TYPE_ACTIVITY,
     },
   },
   trigger: {
-    manager: ContributionManager,
     installerOpts: {
       type: TYPE_TRIGGER,
     },
   },
   function: {
-    manager: ContributionManager,
     installerOpts: {
       type: TYPE_FUNCTION,
     },
   },
 };
+
+const CONTRIBUTION_TYPE = new Map([
+  ['activity', 'flogo:activity'],
+  ['trigger', 'flogo:trigger'],
+  ['function', 'flogo:function'],
+]);
 
 export function contribs(router) {
   router.get(`/contributions/microservices`, listContributions);
@@ -43,11 +44,11 @@ export function contribs(router) {
  *
  */
 async function listContributions(ctx) {
-  const searchTerms: { name?: string; ref?: string; shim?: string } = {};
+  const searchTerms: { name?: string; ref?: string; shim?: string; type?: string } = {};
   const filterName = ctx.request.query['filter[name]'];
   const filterRef = ctx.request.query['filter[ref]'];
   const filterShim = ctx.request.query['filter[shim]'];
-  // const contributionType = contributionTypes[ctx.request.query['filter[type]']];
+  const filterType = CONTRIBUTION_TYPE.get(ctx.request.query['filter[type]']);
 
   if (filterName) {
     searchTerms.name = filterName;
@@ -57,6 +58,9 @@ async function listContributions(ctx) {
   }
   if (filterShim) {
     searchTerms.shim = filterShim;
+  }
+  if (filterType) {
+    searchTerms.type = filterType;
   }
 
   const foundContributions = await ContributionManager.find(searchTerms);
